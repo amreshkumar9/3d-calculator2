@@ -2,59 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Cinematic Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>No Boring Calculator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Theme Selector -->
+    <div class="theme-selector">
+        <button class="theme-btn" data-theme="purple" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></button>
+        <button class="theme-btn" data-theme="ocean" style="background: linear-gradient(135deg, #2E3192 0%, #1BFFFF 100%)"></button>
+        <button class="theme-btn" data-theme="sunset" style="background: linear-gradient(135deg, #FF512F 0%, #F09819 100%)"></button>
+        <button class="theme-btn" data-theme="forest" style="background: linear-gradient(135deg, #134E5E 0%, #71B280 100%)"></button>
+        <button class="theme-btn" data-theme="candy" style="background: linear-gradient(135deg, #FC466B 0%, #3F5EFB 100%)"></button>
+    </div>
+
     <div class="container">
         <div class="calculator">
-            <div class="display-container">
-                <div class="display" id="display">0</div>
-                <div class="sub-display" id="subDisplay"></div>
+            <!-- Header -->
+            <div class="header">
+                <button class="icon-btn" id="historyBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3v18h18"/>
+                        <path d="M18 17V9l-6 6-3-3-3 3"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="soundBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                    </svg>
+                </button>
             </div>
-            
+
+            <!-- Display -->
+            <div class="display-container">
+                <div class="expression" id="expression"></div>
+                <div class="display" id="display">0</div>
+            </div>
+
+            <!-- Swipe Hint -->
+            <div class="swipe-hint">← Swipe to delete</div>
+
+            <!-- Buttons -->
             <div class="buttons">
+                <!-- Memory Row -->
+                <button class="btn btn-memory" data-action="mc">MC</button>
+                <button class="btn btn-memory" data-action="mr">MR</button>
+                <button class="btn btn-memory" data-action="m-">M-</button>
+                <button class="btn btn-memory" data-action="m+">M+</button>
+
                 <!-- Row 1 -->
-                <button class="btn btn-function" onclick="clearDisplay()">AC</button>
-                <button class="btn btn-function" onclick="toggleSign()">+/-</button>
-                <button class="btn btn-function" onclick="percentage()">%</button>
-                <button class="btn btn-operator" onclick="setOperator('/')">÷</button>
+                <button class="btn btn-function" data-action="clear">AC</button>
+                <button class="btn btn-function" data-action="sign">+/-</button>
+                <button class="btn btn-function" data-action="percent">%</button>
+                <button class="btn btn-operator" data-value="/">÷</button>
                 
                 <!-- Row 2 -->
-                <button class="btn" onclick="appendNumber('7')">7</button>
-                <button class="btn" onclick="appendNumber('8')">8</button>
-                <button class="btn" onclick="appendNumber('9')">9</button>
-                <button class="btn btn-operator" onclick="setOperator('*')">×</button>
+                <button class="btn btn-number" data-value="7">7</button>
+                <button class="btn btn-number" data-value="8">8</button>
+                <button class="btn btn-number" data-value="9">9</button>
+                <button class="btn btn-operator" data-value="*">×</button>
                 
                 <!-- Row 3 -->
-                <button class="btn" onclick="appendNumber('4')">4</button>
-                <button class="btn" onclick="appendNumber('5')">5</button>
-                <button class="btn" onclick="appendNumber('6')">6</button>
-                <button class="btn btn-operator" onclick="setOperator('-')">−</button>
+                <button class="btn btn-number" data-value="4">4</button>
+                <button class="btn btn-number" data-value="5">5</button>
+                <button class="btn btn-number" data-value="6">6</button>
+                <button class="btn btn-operator" data-value="-">−</button>
                 
                 <!-- Row 4 -->
-                <button class="btn" onclick="appendNumber('1')">1</button>
-                <button class="btn" onclick="appendNumber('2')">2</button>
-                <button class="btn" onclick="appendNumber('3')">3</button>
-                <button class="btn btn-operator" onclick="setOperator('+')">+</button>
+                <button class="btn btn-number" data-value="1">1</button>
+                <button class="btn btn-number" data-value="2">2</button>
+                <button class="btn btn-number" data-value="3">3</button>
+                <button class="btn btn-operator" data-value="+">+</button>
                 
                 <!-- Row 5 -->
-                <button class="btn btn-zero" onclick="appendNumber('0')">0</button>
-                <button class="btn" onclick="appendNumber('.')">.</button>
-                <button class="btn btn-equals" onclick="calculate()">=</button>
+                <button class="btn btn-number btn-zero" data-value="0">0</button>
+                <button class="btn btn-number" data-value=".">.</button>
+                <button class="btn btn-equals" data-action="equals">=</button>
             </div>
         </div>
     </div>
-    
-    <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+
+    <!-- History Panel -->
+    <div class="history-panel" id="historyPanel">
+        <div class="history-header">
+            <h3>History</h3>
+            <button class="clear-history" id="clearHistory">Clear All</button>
+        </div>
+        <div class="history-list" id="historyList">
+            <p class="empty-history">No calculations yet</p>
+        </div>
     </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>
