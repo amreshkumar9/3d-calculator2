@@ -1,128 +1,367 @@
-let currentInput = '0';
-let previousInput = '';
-let operator = null;
-let shouldResetDisplay = false;
+:root {
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --calc-bg: rgba(255, 255, 255, 0.15);
+    --btn-bg: rgba(255, 255, 255, 0.2);
+    --btn-hover: rgba(255, 255, 255, 0.3);
+    --text-color: #ffffff;
+    --display-bg: rgba(0, 0, 0, 0.2);
+}
 
-const display = document.getElementById('display');
-const subDisplay = document.getElementById('subDisplay');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
 
-// Haptic Feedback
-function vibrate(duration = 10) {
-    if ('vibrate' in navigator) {
-        navigator.vibrate(duration);
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: background 0.5s ease;
+}
+
+/* Theme Selector */
+.theme-selector {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 10px;
+    border-radius: 50px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.theme-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.theme-btn:hover {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+.theme-btn.active {
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+/* Container */
+.container {
+    perspective: 1000px;
+    padding: 20px;
+}
+
+.calculator {
+    width: 380px;
+    background: var(--calc-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 25px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-function updateDisplay() {
-    display.textContent = currentInput;
-    if (previousInput && operator) {
-        subDisplay.textContent = `${previousInput} ${operator}`;
-    } else {
-        subDisplay.textContent = '';
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.icon-btn {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--btn-bg);
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:active {
+    transform: scale(0.9);
+    background: var(--btn-hover);
+}
+
+/* Display */
+.display-container {
+    background: var(--display-bg);
+    border-radius: 20px;
+    padding: 25px 20px;
+    margin-bottom: 10px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.expression {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 18px;
+    text-align: right;
+    min-height: 25px;
+    margin-bottom: 10px;
+    font-weight: 300;
+}
+
+.display {
+    color: var(--text-color);
+    font-size: 56px;
+    text-align: right;
+    font-weight: 300;
+    letter-spacing: -2px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+}
+
+.display::-webkit-scrollbar {
+    display: none;
+}
+
+/* Swipe Hint */
+.swipe-hint {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    margin-bottom: 15px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Buttons */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.btn {
+    background: var(--btn-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: var(--text-color);
+    font-size: 26px;
+    font-weight: 400;
+    height: 70px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+
+.btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-memory {
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 18px;
+    height: 45px;
+}
+
+.btn-function {
+    background: rgba(255, 255, 255, 0.25);
+    font-weight: 500;
+}
+
+.btn-operator {
+    background: rgba(255, 159, 10, 0.8);
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(255, 159, 10, 0.3);
+}
+
+.btn-equals {
+    background: linear-gradient(135deg, #34c759, #28a745);
+    font-weight: 600;
+    font-size: 32px;
+    box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4);
+}
+
+.btn-zero {
+    grid-column: span 2;
+}
+
+/* History Panel */
+.history-panel {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 350px;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 30px 20px;
+    transition: right 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.history-panel.active {
+    right: 0;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.history-header h3 {
+    color: #fff;
+    font-size: 24px;
+}
+
+.clear-history {
+    background: rgba(255, 59, 48, 0.8);
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.clear-history:active {
+    transform: scale(0.95);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.history-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 12px;
+    color: #fff;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
-function appendNumber(number) {
-    vibrate(10);
-    
-    if (currentInput === '0' || shouldResetDisplay) {
-        currentInput = number;
-        shouldResetDisplay = false;
-    } else {
-        if (number === '.' && currentInput.includes('.')) return;
-        currentInput += number;
+.history-item .calc {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 5px;
+}
+
+.history-item .result {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.empty-history {
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    margin-top: 50px;
+}
+
+/* Themes */
+body.ocean {
+    --bg-gradient: linear-gradient(135deg, #2E3192 0%, #1BFFFF 100%);
+}
+
+body.sunset {
+    --bg-gradient: linear-gradient(135deg, #FF512F 0%, #F09819 100%);
+}
+
+body.forest {
+    --bg-gradient: linear-gradient(135deg, #134E5E 0%, #71B280 100%);
+}
+
+body.candy {
+    --bg-gradient: linear-gradient(135deg, #FC466B 0%, #3F5EFB 100%);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .calculator {
+        width: 100%;
+        max-width: 360px;
     }
     
-    updateDisplay();
-}
-
-function setOperator(op) {
-    vibrate(15);
-    
-    if (operator !== null && !shouldResetDisplay) {
-        calculate();
+    .history-panel {
+        width: 100%;
+        right: -100%;
     }
     
-    previousInput = currentInput;
-    operator = op;
-    shouldResetDisplay = true;
-    updateDisplay();
-}
-
-function calculate() {
-    vibrate(20);
-    
-    if (operator === null || shouldResetDisplay) return;
-    
-    const prev = parseFloat(previousInput);
-    const current = parseFloat(currentInput);
-    
-    let result;
-    
-    switch (operator) {
-        case '+':
-            result = prev + current;
-            break;
-        case '-':
-            result = prev - current;
-            break;
-        case '*':
-            result = prev * current;
-            break;
-        case '/':
-            result = current !== 0 ? prev / current : 'Error';
-            break;
-        default:
-            return;
+    .theme-selector {
+        top: 10px;
+        padding: 8px;
     }
     
-    currentInput = result.toString();
-    operator = null;
-    previousInput = '';
-    shouldResetDisplay = true;
-    updateDisplay();
-    
-    // Animation effect on calculation
-    display.style.transform = 'scale(1.05)';
-    setTimeout(() => {
-        display.style.transform = 'scale(1)';
-    }, 200);
-}
-
-function clearDisplay() {
-    vibrate(15);
-    currentInput = '0';
-    previousInput = '';
-    operator = null;
-    shouldResetDisplay = false;
-    updateDisplay();
-}
-
-function toggleSign() {
-    vibrate(10);
-    if (currentInput !== '0') {
-        currentInput = (parseFloat(currentInput) * -1).toString();
-        updateDisplay();
+    .theme-btn {
+        width: 35px;
+        height: 35px;
     }
 }
-
-function percentage() {
-    vibrate(10);
-    currentInput = (parseFloat(currentInput) / 100).toString();
-    updateDisplay();
-}
-
-// Keyboard Support
-document.addEventListener('keydown', (e) => {
-    if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
-    if (e.key === '.') appendNumber('.');
-    if (e.key === '+') setOperator('+');
-    if (e.key === '-') setOperator('-');
-    if (e.key === '*') setOperator('*');
-    if (e.key === '/') setOperator('/');
-    if (e.key === 'Enter' || e.key === '=') calculate();
-    if (e.key === 'Escape') clearDisplay();
-});
-
-// Initialize
-updateDisplay();
