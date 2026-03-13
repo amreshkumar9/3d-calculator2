@@ -1,0 +1,128 @@
+let currentInput = '0';
+let previousInput = '';
+let operator = null;
+let shouldResetDisplay = false;
+
+const display = document.getElementById('display');
+const subDisplay = document.getElementById('subDisplay');
+
+// Haptic Feedback
+function vibrate(duration = 10) {
+    if ('vibrate' in navigator) {
+        navigator.vibrate(duration);
+    }
+}
+
+function updateDisplay() {
+    display.textContent = currentInput;
+    if (previousInput && operator) {
+        subDisplay.textContent = `${previousInput} ${operator}`;
+    } else {
+        subDisplay.textContent = '';
+    }
+}
+
+function appendNumber(number) {
+    vibrate(10);
+    
+    if (currentInput === '0' || shouldResetDisplay) {
+        currentInput = number;
+        shouldResetDisplay = false;
+    } else {
+        if (number === '.' && currentInput.includes('.')) return;
+        currentInput += number;
+    }
+    
+    updateDisplay();
+}
+
+function setOperator(op) {
+    vibrate(15);
+    
+    if (operator !== null && !shouldResetDisplay) {
+        calculate();
+    }
+    
+    previousInput = currentInput;
+    operator = op;
+    shouldResetDisplay = true;
+    updateDisplay();
+}
+
+function calculate() {
+    vibrate(20);
+    
+    if (operator === null || shouldResetDisplay) return;
+    
+    const prev = parseFloat(previousInput);
+    const current = parseFloat(currentInput);
+    
+    let result;
+    
+    switch (operator) {
+        case '+':
+            result = prev + current;
+            break;
+        case '-':
+            result = prev - current;
+            break;
+        case '*':
+            result = prev * current;
+            break;
+        case '/':
+            result = current !== 0 ? prev / current : 'Error';
+            break;
+        default:
+            return;
+    }
+    
+    currentInput = result.toString();
+    operator = null;
+    previousInput = '';
+    shouldResetDisplay = true;
+    updateDisplay();
+    
+    // Animation effect on calculation
+    display.style.transform = 'scale(1.05)';
+    setTimeout(() => {
+        display.style.transform = 'scale(1)';
+    }, 200);
+}
+
+function clearDisplay() {
+    vibrate(15);
+    currentInput = '0';
+    previousInput = '';
+    operator = null;
+    shouldResetDisplay = false;
+    updateDisplay();
+}
+
+function toggleSign() {
+    vibrate(10);
+    if (currentInput !== '0') {
+        currentInput = (parseFloat(currentInput) * -1).toString();
+        updateDisplay();
+    }
+}
+
+function percentage() {
+    vibrate(10);
+    currentInput = (parseFloat(currentInput) / 100).toString();
+    updateDisplay();
+}
+
+// Keyboard Support
+document.addEventListener('keydown', (e) => {
+    if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
+    if (e.key === '.') appendNumber('.');
+    if (e.key === '+') setOperator('+');
+    if (e.key === '-') setOperator('-');
+    if (e.key === '*') setOperator('*');
+    if (e.key === '/') setOperator('/');
+    if (e.key === 'Enter' || e.key === '=') calculate();
+    if (e.key === 'Escape') clearDisplay();
+});
+
+// Initialize
+updateDisplay();
