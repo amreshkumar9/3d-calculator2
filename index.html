@@ -3,83 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>No Boring Calculator</title>
+    <meta name="theme-color" content="#667eea">
+    <title>No Boring Calculator Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Theme Selector -->
-    <div class="theme-selector">
-        <button class="theme-btn" data-theme="purple" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></button>
-        <button class="theme-btn" data-theme="ocean" style="background: linear-gradient(135deg, #2E3192 0%, #1BFFFF 100%)"></button>
-        <button class="theme-btn" data-theme="sunset" style="background: linear-gradient(135deg, #FF512F 0%, #F09819 100%)"></button>
-        <button class="theme-btn" data-theme="forest" style="background: linear-gradient(135deg, #134E5E 0%, #71B280 100%)"></button>
-        <button class="theme-btn" data-theme="candy" style="background: linear-gradient(135deg, #FC466B 0%, #3F5EFB 100%)"></button>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-text">Loading...</div>
+        </div>
     </div>
 
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="logo">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="4" y="4" width="16" height="16" rx="2"/>
+                <path d="M9 9h6M9 12h6M9 15h6"/>
+            </svg>
+            <span>Calculator Pro</span>
+        </div>
+        <div class="top-controls">
+            <button class="icon-btn" id="themeToggle" title="Dark/Light Mode">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+            <button class="icon-btn" id="settingsBtn" title="Settings">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v6m0 6v6m5.2-13.8l-4.2 4.2m0 5.2l4.2 4.2m6.6-10.6l-6 0m-6 0l-6 0m13.8 5.2l-4.2-4.2m0-5.2l-4.2-4.2"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Theme Palette -->
+    <div class="theme-palette" id="themePalette">
+        <div class="palette-title">Choose Your Vibe</div>
+        <div class="theme-grid">
+            <button class="theme-card active" data-theme="purple-dream">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></div>
+                <span>Purple Dream</span>
+            </button>
+            <button class="theme-card" data-theme="ocean-blue">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #2E3192 0%, #1BFFFF 100%)"></div>
+                <span>Ocean Blue</span>
+            </button>
+            <button class="theme-card" data-theme="sunset-orange">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #FF512F 0%, #F09819 100%)"></div>
+                <span>Sunset Orange</span>
+            </button>
+            <button class="theme-card" data-theme="forest-green">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #134E5E 0%, #71B280 100%)"></div>
+                <span>Forest Green</span>
+            </button>
+            <button class="theme-card" data-theme="pink-candy">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #FC466B 0%, #3F5EFB 100%)"></div>
+                <span>Pink Candy</span>
+            </button>
+            <button class="theme-card" data-theme="gold-luxury">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #FFB75E 0%, #ED8F03 100%)"></div>
+                <span>Gold Luxury</span>
+            </button>
+            <button class="theme-card" data-theme="cosmic-purple">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%)"></div>
+                <span>Cosmic Purple</span>
+            </button>
+            <button class="theme-card" data-theme="mint-fresh">
+                <div class="theme-preview" style="background: linear-gradient(135deg, #00F260 0%, #0575E6 100%)"></div>
+                <span>Mint Fresh</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <h3>Settings</h3>
+            <button class="close-btn" id="closeSettings">×</button>
+        </div>
+        <div class="settings-content">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Sound Effects</div>
+                    <div class="setting-desc">Play tap sounds</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="soundToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Haptic Feedback</div>
+                    <div class="setting-desc">Vibrate on tap</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="hapticToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Scientific Mode</div>
+                    <div class="setting-desc">Advanced functions</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="scientificToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Animations</div>
+                    <div class="setting-desc">Smooth transitions</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="animationsToggle" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
     <div class="container">
-        <div class="calculator">
-            <!-- Header -->
-            <div class="header">
-                <button class="icon-btn" id="historyBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 3v18h18"/>
-                        <path d="M18 17V9l-6 6-3-3-3 3"/>
+        <div class="calculator" id="calculator">
+            <!-- Display Area -->
+            <div class="display-area">
+                <div class="expression-display" id="expression">
+                    <span class="placeholder">Start calculating...</span>
+                </div>
+                <div class="main-display" id="display">0</div>
+                <div class="swipe-indicator">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
                     </svg>
+                    Swipe to delete
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <button class="quick-btn" id="historyBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    History
                 </button>
-                <button class="icon-btn" id="soundBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                <button class="quick-btn" id="clearAllBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
                     </svg>
+                    Clear
                 </button>
             </div>
 
-            <!-- Display -->
-            <div class="display-container">
-                <div class="expression" id="expression"></div>
-                <div class="display" id="display">0</div>
+            <!-- Scientific Functions (Hidden by default) -->
+            <div class="scientific-row" id="scientificRow" style="display: none;">
+                <button class="btn btn-scientific" data-fn="sin">sin</button>
+                <button class="btn btn-scientific" data-fn="cos">cos</button>
+                <button class="btn btn-scientific" data-fn="tan">tan</button>
+                <button class="btn btn-scientific" data-fn="sqrt">√</button>
+                <button class="btn btn-scientific" data-fn="pow">x²</button>
+                <button class="btn btn-scientific" data-fn="pi">π</button>
             </div>
 
-            <!-- Swipe Hint -->
-            <div class="swipe-hint">← Swipe to delete</div>
+            <!-- Memory Functions -->
+            <div class="memory-row">
+                <button class="btn btn-memory" data-mem="mc">MC</button>
+                <button class="btn btn-memory" data-mem="mr">MR</button>
+                <button class="btn btn-memory" data-mem="m-">M-</button>
+                <button class="btn btn-memory" data-mem="m+">M+</button>
+            </div>
 
-            <!-- Buttons -->
-            <div class="buttons">
-                <!-- Memory Row -->
-                <button class="btn btn-memory" data-action="mc">MC</button>
-                <button class="btn btn-memory" data-action="mr">MR</button>
-                <button class="btn btn-memory" data-action="m-">M-</button>
-                <button class="btn btn-memory" data-action="m+">M+</button>
-
+            <!-- Main Button Grid -->
+            <div class="button-grid">
                 <!-- Row 1 -->
-                <button class="btn btn-function" data-action="clear">AC</button>
-                <button class="btn btn-function" data-action="sign">+/-</button>
+                <button class="btn btn-function" data-action="ac">AC</button>
+                <button class="btn btn-function" data-action="parenthesis">()</button>
                 <button class="btn btn-function" data-action="percent">%</button>
                 <button class="btn btn-operator" data-value="/">÷</button>
                 
                 <!-- Row 2 -->
-                <button class="btn btn-number" data-value="7">7</button>
-                <button class="btn btn-number" data-value="8">8</button>
-                <button class="btn btn-number" data-value="9">9</button>
+                <button class="btn btn-number" data-value="7">
+                    <span class="btn-main">7</span>
+                </button>
+                <button class="btn btn-number" data-value="8">
+                    <span class="btn-main">8</span>
+                </button>
+                <button class="btn btn-number" data-value="9">
+                    <span class="btn-main">9</span>
+                </button>
                 <button class="btn btn-operator" data-value="*">×</button>
                 
                 <!-- Row 3 -->
-                <button class="btn btn-number" data-value="4">4</button>
-                <button class="btn btn-number" data-value="5">5</button>
-                <button class="btn btn-number" data-value="6">6</button>
+                <button class="btn btn-number" data-value="4">
+                    <span class="btn-main">4</span>
+                </button>
+                <button class="btn btn-number" data-value="5">
+                    <span class="btn-main">5</span>
+                </button>
+                <button class="btn btn-number" data-value="6">
+                    <span class="btn-main">6</span>
+                </button>
                 <button class="btn btn-operator" data-value="-">−</button>
                 
                 <!-- Row 4 -->
-                <button class="btn btn-number" data-value="1">1</button>
-                <button class="btn btn-number" data-value="2">2</button>
-                <button class="btn btn-number" data-value="3">3</button>
+                <button class="btn btn-number" data-value="1">
+                    <span class="btn-main">1</span>
+                </button>
+                <button class="btn btn-number" data-value="2">
+                    <span class="btn-main">2</span>
+                </button>
+                <button class="btn btn-number" data-value="3">
+                    <span class="btn-main">3</span>
+                </button>
                 <button class="btn btn-operator" data-value="+">+</button>
                 
                 <!-- Row 5 -->
-                <button class="btn btn-number btn-zero" data-value="0">0</button>
+                <button class="btn btn-number btn-zero" data-value="0">
+                    <span class="btn-main">0</span>
+                </button>
                 <button class="btn btn-number" data-value=".">.</button>
-                <button class="btn btn-equals" data-action="equals">=</button>
+                <button class="btn btn-equals" data-action="equals">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -87,13 +243,40 @@
     <!-- History Panel -->
     <div class="history-panel" id="historyPanel">
         <div class="history-header">
-            <h3>History</h3>
-            <button class="clear-history" id="clearHistory">Clear All</button>
+            <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                History
+            </h3>
+            <div class="history-actions">
+                <button class="icon-btn" id="clearHistory" title="Clear All">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="closeHistory" title="Close">×</button>
+            </div>
         </div>
         <div class="history-list" id="historyList">
-            <p class="empty-history">No calculations yet</p>
+            <div class="empty-state">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <p>No calculations yet</p>
+                <span>Your history will appear here</span>
+            </div>
         </div>
     </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Particle Effects -->
+    <div class="particles" id="particles"></div>
 
     <script src="script.js"></script>
 </body>
